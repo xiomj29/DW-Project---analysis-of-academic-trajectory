@@ -1,0 +1,55 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: dw_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/schema.sql:/docker-entrypoint-initdb.d/schema.sql:z
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d dw_db"]
+      interval: 5s
+      retries: 10
+
+  backend:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "/app/scripts/wait-for-it.sh db:5432 --timeout=60 --strict -- \
+             python manage.py migrate &&
+             python /app/scripts/insert_data.py &&
+             python manage.py runserver 0.0.0.0:8000"
+
+    volumes:
+      - .:/app:z
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_NAME: dw_db
+      DATABASE_USER: admin
+      DATABASE_PASSWORD: admin123
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+    restart: unless-stopped
+
+  frontend:
+    image: nginx:alpine
+    container_name: dw_frontend
+    depends_on:
+      - backend
+    volumes:
+      - ./staticfiles:/usr/share/nginx/html:ro
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

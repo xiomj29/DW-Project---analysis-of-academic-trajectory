@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Warehouse - Gestión de Estudiantes</title>
+    <link rel="stylesheet" href="../../static/warehouse/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Data Warehouse</h1>
+            <p>Sistema de Gestión de Estudiantes</p>
+        </div>
+
+        <div class="content">
+            <!-- Sección de Formulario CRUD -->
+            <div class="crud-section">
+                <h2 class="section-title">Gestión de Estudiantes</h2>
+                
+                <div class="form-container">
+                    <form id="studentForm">
+                        <input type="hidden" id="studentId" name="id_estudiante">
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nombre">Nombre</label>
+                                <input type="text" id="nombre" name="nombre" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="apellido">Apellido</label>
+                                <input type="text" id="apellido" name="apellido" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="carrera">Carrera</label>
+                                <input type="text" id="carrera" name="carrera" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="semestre">Semestre</label>
+                                <select id="semestre" name="semestre" required>
+                                    <option value="">Seleccionar semestre</option>
+                                    <option value="1">1er Semestre</option>
+                                    <option value="2">2do Semestre</option>
+                                    <option value="3">3er Semestre</option>
+                                    <option value="4">4to Semestre</option>
+                                    <option value="5">5to Semestre</option>
+                                    <option value="6">6to Semestre</option>
+                                    <option value="7">7mo Semestre</option>
+                                    <option value="8">8vo Semestre</option>
+                                    <option value="9">9no Semestre</option>
+                                    <option value="10">10mo Semestre</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary" id="saveBtn">
+                                💾 Guardar Estudiante
+                            </button>
+                            <button type="button" class="btn btn-success" id="updateBtn" style="display: none;">
+                                ✏️ Actualizar Estudiante
+                            </button>
+                            <button type="button" class="btn btn-warning" id="clearBtn">
+                                🗑️ Limpiar Formulario
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Área de mensajes -->
+                <div id="alertContainer"></div>
+            </div>
+
+            <!-- Sección de Lista de Estudiantes -->
+            <div class="crud-section">
+                <div class="students-table">
+                    <div class="table-header">
+                        <h3 class="table-title">Lista de Estudiantes</h3>
+                        <div class="search-box">
+                            <input type="text" id="searchInput" placeholder="Buscar por nombre, apellido, carrera o ID...">
+                            <button type="button" class="btn btn-primary" id="refreshBtn">
+                                🔄 Actualizar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <div id="loadingIndicator" class="loading hidden">
+                            Cargando estudiantes...
+                        </div>
+                        
+                        <table id="studentsTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Carrera</th>
+                                    <th>Semestre</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody">
+                                <!-- datos -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="pagination" id="paginationContainer">
+                        <!-- controles de paginación -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para mostrar calificaciones -->
+    <div id="gradesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Calificaciones y Rendimiento Académico</h2>
+                <span class="close" onclick="closeGradesModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="student-info" id="studentInfo">
+                    <!-- Información del estudiante -->
+                </div>
+                
+                <div class="stats-summary" id="statsSummary">
+                    <!-- Resumen estadístico -->
+                </div>
+                
+                <div class="charts-container">
+                    <h4>Gráficos de Rendimiento</h4>
+                    <div class="single-chart-wrapper">
+                        <div class="small-chart-container">
+                            <canvas id="gradeDistributionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grades-section">
+                    <h4>Detalle de Calificaciones</h4>
+                    <div class="grades-grid" id="gradesGrid">
+                        <!-- calificaciones -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="../../static/warehouse/js/main.js"></script>
+</body>
+</html>
